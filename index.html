@@ -3,31 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ForcedChrome</title>
+  <title>Portal</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <!-- Optionaler Intro-Text -->
-  <div class="intro-text">Du bist nicht eingeladen. Aber du bist trotzdem hier.</div>
-
-  <!-- Spaltzone – positioniert, aber nicht gestylt -->
   <div class="spalt-wrapper">
-    <div class="door-container" id="spalt" onclick="enterSite()">
-      <div class="door-slit"></div>
-    </div>
+    <div class="door-container" id="spalt"></div>
   </div>
-
-  <!-- Footer-Text -->
-  <div class="footer-text">ForcedChrome</div>
-
-  <!-- Nebelcanvas -->
-  <canvas id="fogCanvas"></canvas>
-
-  <!-- Sound (optional, kommt später im Script) -->
-  <audio id="click-sound" src="assets/click.mp3" preload="auto"></audio>
-
-  <!-- Externes Skript -->
   <script src="script.js" defer></script>
 </body>
 </html>
