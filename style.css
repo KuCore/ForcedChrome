@@ -1,18 +1,35 @@
 body {
   margin: 0;
   background-color: #000;
-  font-family: 'Segoe UI', sans-serif;
-  color: #fff;
   height: 100vh;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.spalt-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
 .door-container {
-  width: 12px;
+  width: 6px;
   height: 60%;
-  background: linear-gradient(to bottom, #ffa, #fff, #ffa);
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(255, 200, 150, 0.4);
+  background: linear-gradient(to bottom, #222, #444, #222);
+  border-radius: 4px;
+  animation: glowUp 4s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(255,255,255,0.05);
+}
+
+@keyframes glowUp {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.15);
+  }
 }
