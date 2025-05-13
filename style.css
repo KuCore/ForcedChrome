@@ -1,0 +1,18 @@
+body {
+  margin: 0;
+  background-color: #000;
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.door-container {
+  width: 12px;
+  height: 60%;
+  background: linear-gradient(to bottom, #ffa, #fff, #ffa);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255, 200, 150, 0.4);
+}
