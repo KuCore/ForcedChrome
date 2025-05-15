@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Würdest du?</title>
+  <title>Would you?</title>
   <style>
     html, body {
       margin: 0;
@@ -29,21 +29,22 @@
 
     .question {
       z-index: 1;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #ccc;
       opacity: 0.4;
       letter-spacing: 2px;
       text-transform: lowercase;
       pointer-events: none;
+      position: relative;
+      top: 30px;
     }
   </style>
 </head>
 <body>
   <canvas id="portal"></canvas>
-  <div class="question">Würdest du?</div>
+  <div class="question">Would you?</div>
 
-  <!-- Optionaler Ambient Sound -->
-  <audio src="https://cdn.pixabay.com/audio/2022/03/15/audio_661e35fd5c.mp3" autoplay loop preload="auto" volume="0.2"></audio>
+  <audio src="https://cdn.pixabay.com/audio/2022/03/15/audio_661e35fd5c.mp3" autoplay loop preload="auto"></audio>
 
   <script>
     const canvas = document.getElementById("portal");
@@ -74,22 +75,23 @@
       const cy = canvas.height / 2;
 
       const prox = 1 - Math.min(1, Math.abs(pointerX - cx) / 300);
-      const glow = 40 + prox * 120;
-      const opacity = 0.08 + prox * 0.4 + Math.random() * 0.1;
+      const glow = 40 + prox * 100;
+      const opacity = 0.1 + prox * 0.4 + Math.random() * 0.1;
 
-      const grad = ctx.createLinearGradient(0, cy - 200, 0, cy + 200);
+      const height = 200; // kürzerer Spalt
+      const grad = ctx.createLinearGradient(0, cy - height / 2, 0, cy + height / 2);
       grad.addColorStop(0, `rgba(255,255,255,${opacity * 0.2})`);
       grad.addColorStop(0.5, `rgba(255,255,255,${opacity})`);
       grad.addColorStop(1, `rgba(255,255,255,${opacity * 0.2})`);
 
       ctx.fillStyle = grad;
-      ctx.fillRect(cx - 2, cy - 200, 4, 400);
+      ctx.fillRect(cx - 2, cy - height / 2, 4, height);
 
       ctx.beginPath();
       ctx.shadowColor = `rgba(255,255,255,${opacity})`;
       ctx.shadowBlur = glow;
       ctx.fillStyle = "rgba(255,255,255,0.01)";
-      ctx.fillRect(cx - 1, cy - 200, 2, 400);
+      ctx.fillRect(cx - 1, cy - height / 2, 2, height);
       ctx.closePath();
 
       requestAnimationFrame(draw);
