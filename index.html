@@ -27,14 +27,25 @@
       z-index: 1;
       font-size: 1.1rem;
       color: #ccc;
-      opacity: 0.4;
+      opacity: 0;
       letter-spacing: 2px;
       text-transform: lowercase;
       pointer-events: none;
       position: absolute;
-      top: 80%;
+      top: 70%;
       left: 50%;
       transform: translate(-50%, 0);
+      animation: appear 4s ease-out 1s forwards, float 6s ease-in-out infinite;
+    }
+
+    @keyframes appear {
+      0% { opacity: 0; transform: translate(-50%, 10px); }
+      100% { opacity: 0.4; transform: translate(-50%, 0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(-50%, 0); }
+      50% { transform: translate(-50%, -4px); }
     }
   </style>
 </head>
@@ -73,10 +84,12 @@
       const cy = canvas.height / 2;
 
       const prox = 1 - Math.min(1, Math.abs(pointerX - cx) / 300);
-      const glow = 40 + prox * 100;
-      const opacity = 0.1 + prox * 0.4 + Math.random() * 0.1;
+      const glow = 60 + prox * 60;
+      const opacity = 0.1 + prox * 0.4 + Math.random() * 0.05;
 
-      const height = 200;
+      const height = 400;
+
+      // Hauptstrahl
       const grad = ctx.createLinearGradient(0, cy - height / 2, 0, cy + height / 2);
       grad.addColorStop(0, `rgba(255,255,255,${opacity * 0.2})`);
       grad.addColorStop(0.5, `rgba(255,255,255,${opacity})`);
@@ -85,12 +98,31 @@
       ctx.fillStyle = grad;
       ctx.fillRect(cx - 2, cy - height / 2, 4, height);
 
+      // Glow innen
       ctx.beginPath();
       ctx.shadowColor = `rgba(255,255,255,${opacity})`;
       ctx.shadowBlur = glow;
       ctx.fillStyle = "rgba(255,255,255,0.01)";
       ctx.fillRect(cx - 1, cy - height / 2, 2, height);
       ctx.closePath();
+
+      // Obere Rundung
+      ctx.beginPath();
+      const topGrad = ctx.createRadialGradient(cx, cy - height / 2, 0, cx, cy - height / 2, 20);
+      topGrad.addColorStop(0, `rgba(255,255,255,${opacity * 0.1})`);
+      topGrad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = topGrad;
+      ctx.arc(cx, cy - height / 2, 20, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Untere Rundung
+      ctx.beginPath();
+      const botGrad = ctx.createRadialGradient(cx, cy + height / 2, 0, cx, cy + height / 2, 20);
+      botGrad.addColorStop(0, `rgba(255,255,255,${opacity * 0.1})`);
+      botGrad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = botGrad;
+      ctx.arc(cx, cy + height / 2, 20, 0, Math.PI * 2);
+      ctx.fill();
 
       requestAnimationFrame(draw);
     }
