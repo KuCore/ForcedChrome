@@ -2,39 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>Would you?</title>
   <style>
     html, body {
       margin: 0;
-      background: #000;
-      overflow: hidden;
+      padding: 0;
       height: 100%;
+      background-color: #000;
+      overflow: hidden;
       font-family: 'Segoe UI', sans-serif;
+      touch-action: none;
     }
 
     canvas {
       display: block;
-      width: 100vw;
-      height: 100vh;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 0;
+      width: 100%;
+      height: 100%;
     }
 
     .question {
-      z-index: 1;
-      font-size: 1.1rem;
-      color: #ccc;
-      opacity: 0;
-      letter-spacing: 2px;
-      text-transform: lowercase;
-      pointer-events: none;
       position: absolute;
       top: 67%;
       left: 50%;
-      transform: translate(-50%, 0);
+      transform: translateX(-50%);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: #ccc;
+      letter-spacing: 2px;
+      text-transform: lowercase;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
       animation: appear 4s ease-out 1s forwards, float 6s ease-in-out infinite;
     }
 
@@ -52,21 +50,27 @@
 <body>
   <canvas id="portal"></canvas>
   <div class="question">Would you?</div>
-
   <audio src="https://cdn.pixabay.com/audio/2022/03/15/audio_661e35fd5c.mp3" autoplay loop preload="auto"></audio>
 
   <script>
     const canvas = document.getElementById("portal");
     const ctx = canvas.getContext("2d");
+    let dpr = window.devicePixelRatio || 1;
 
     function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
+      ctx.scale(dpr, dpr);
     }
+
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    let pointerX = canvas.width / 2;
+    let pointerX = window.innerWidth / 2;
 
     function updatePointer(x) {
       pointerX = x;
@@ -74,22 +78,19 @@
 
     document.addEventListener("mousemove", e => updatePointer(e.clientX));
     document.addEventListener("touchmove", e => {
-      const t = e.touches[0];
-      updatePointer(t.clientX);
+      if (e.touches.length > 0) updatePointer(e.touches[0].clientX);
     }, { passive: true });
 
     function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
-
+      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
       const prox = 1 - Math.min(1, Math.abs(pointerX - cx) / 300);
-      const glow = 60 + prox * 60;
+      const glow = 40 + prox * 60;
       const opacity = 0.1 + prox * 0.4 + Math.random() * 0.05;
+      const height = Math.min(window.innerHeight * 0.5, 400);
 
-      const height = 400;
-
-      // Hauptstrahl
+      // Gradient beam
       const grad = ctx.createLinearGradient(0, cy - height / 2, 0, cy + height / 2);
       grad.addColorStop(0, `rgba(255,255,255,${opacity * 0.2})`);
       grad.addColorStop(0.5, `rgba(255,255,255,${opacity})`);
@@ -98,7 +99,7 @@
       ctx.fillStyle = grad;
       ctx.fillRect(cx - 2, cy - height / 2, 4, height);
 
-      // Glow innen
+      // Glow
       ctx.beginPath();
       ctx.shadowColor = `rgba(255,255,255,${opacity})`;
       ctx.shadowBlur = glow;
@@ -106,7 +107,7 @@
       ctx.fillRect(cx - 1, cy - height / 2, 2, height);
       ctx.closePath();
 
-      // Obere Rundung
+      // Top round
       ctx.beginPath();
       const topGrad = ctx.createRadialGradient(cx, cy - height / 2, 0, cx, cy - height / 2, 20);
       topGrad.addColorStop(0, `rgba(255,255,255,${opacity * 0.1})`);
@@ -115,7 +116,7 @@
       ctx.arc(cx, cy - height / 2, 20, 0, Math.PI * 2);
       ctx.fill();
 
-      // Untere Rundung
+      // Bottom round
       ctx.beginPath();
       const botGrad = ctx.createRadialGradient(cx, cy + height / 2, 0, cx, cy + height / 2, 20);
       botGrad.addColorStop(0, `rgba(255,255,255,${opacity * 0.1})`);
