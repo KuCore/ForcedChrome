@@ -10,17 +10,40 @@
       background: #000;
       overflow: hidden;
       height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
 
     canvas {
       display: block;
       width: 100vw;
       height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .question {
+      z-index: 1;
+      font-size: 1.2rem;
+      color: #ccc;
+      opacity: 0.4;
+      letter-spacing: 2px;
+      text-transform: lowercase;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
   <canvas id="portal"></canvas>
+  <div class="question">Würdest du?</div>
+
+  <!-- Optionaler Ambient Sound -->
+  <audio src="https://cdn.pixabay.com/audio/2022/03/15/audio_661e35fd5c.mp3" autoplay loop preload="auto" volume="0.2"></audio>
 
   <script>
     const canvas = document.getElementById("portal");
@@ -34,17 +57,15 @@
     window.addEventListener("resize", resizeCanvas);
 
     let pointerX = canvas.width / 2;
-    let pointerY = canvas.height / 2;
 
-    function updatePointer(x, y) {
+    function updatePointer(x) {
       pointerX = x;
-      pointerY = y;
     }
 
-    document.addEventListener("mousemove", e => updatePointer(e.clientX, e.clientY));
+    document.addEventListener("mousemove", e => updatePointer(e.clientX));
     document.addEventListener("touchmove", e => {
       const t = e.touches[0];
-      updatePointer(t.clientX, t.clientY);
+      updatePointer(t.clientX);
     }, { passive: true });
 
     function draw() {
@@ -53,8 +74,8 @@
       const cy = canvas.height / 2;
 
       const prox = 1 - Math.min(1, Math.abs(pointerX - cx) / 300);
-      const glow = 50 + prox * 100;
-      const opacity = 0.1 + prox * 0.4 + Math.random() * 0.1;
+      const glow = 40 + prox * 120;
+      const opacity = 0.08 + prox * 0.4 + Math.random() * 0.1;
 
       const grad = ctx.createLinearGradient(0, cy - 200, 0, cy + 200);
       grad.addColorStop(0, `rgba(255,255,255,${opacity * 0.2})`);
